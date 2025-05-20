@@ -25,7 +25,7 @@ import { Message } from "../types/app.types";
 // Add a type for the date separator messages
 interface DateSeparator {
   id: string;
-  role: 'separator';
+  role: "separator";
   content: string;
   timestamp: number;
 }
@@ -37,19 +37,19 @@ type DisplayMessage = Message | DateSeparator;
 const formatDisplayDate = (timestamp: number): string => {
   const today = new Date();
   const date = new Date(timestamp);
-  
+
   // Check if date is today
   if (today.toDateString() === date.toDateString()) {
-    return 'Today';
+    return "Today";
   }
-  
+
   // Check if date was yesterday
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
   if (yesterday.toDateString() === date.toDateString()) {
-    return 'Yesterday';
+    return "Yesterday";
   }
-  
+
   // Return full date for older messages
   return date.toLocaleDateString();
 };
@@ -135,10 +135,10 @@ export default function ChatScreen() {
             style: "destructive",
             onPress: () => deleteMessage(messageId),
           },
-        ]
+        ],
       );
     },
-    [deleteMessage]
+    [deleteMessage],
   );
 
   const scrollToBottom = () => {
@@ -152,7 +152,7 @@ export default function ChatScreen() {
   // Process messages for display
   const processMessagesForDisplay = useCallback(() => {
     const displayMessages = [...messages];
-    
+
     if (currentResponse) {
       displayMessages.push({
         id: "current-response",
@@ -161,30 +161,30 @@ export default function ChatScreen() {
         timestamp: Date.now(),
       });
     }
-    
+
     // Add date separators between messages from different days
     const messagesWithSeparators: DisplayMessage[] = [];
-    let lastMessageDate = '';
-    
+    let lastMessageDate = "";
+
     displayMessages.forEach((msg, index) => {
       const messageDate = new Date(msg.timestamp).toDateString();
-      
+
       if (messageDate !== lastMessageDate) {
         lastMessageDate = messageDate;
-        
+
         if (index > 0) {
           messagesWithSeparators.push({
             id: `date-separator-${msg.timestamp}`,
-            role: 'separator',
+            role: "separator",
             content: formatDisplayDate(msg.timestamp),
             timestamp: msg.timestamp,
           });
         }
       }
-      
+
       messagesWithSeparators.push(msg);
     });
-    
+
     return messagesWithSeparators;
   }, [messages, currentResponse]);
 
@@ -209,7 +209,7 @@ export default function ChatScreen() {
     // This will run when the component mounts
     console.log("ChatScreen mounted, refreshing conversation");
     refreshConversation();
-    
+
     // We could add an event listener for app state changes here
     // to refresh when the app comes back to the foreground
   }, [refreshConversation]);
@@ -234,8 +234,11 @@ export default function ChatScreen() {
         leftIcon="back"
         onLeftPress={handleBack}
         rightIcon={
-          <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity onPress={refreshConversation} style={[styles.clearButton, { marginRight: 8 }]}>
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity
+              onPress={refreshConversation}
+              style={[styles.clearButton, { marginRight: 8 }]}
+            >
               <Ionicons
                 name="refresh-outline"
                 size={24}
@@ -269,7 +272,7 @@ export default function ChatScreen() {
           />
         }
         renderItem={({ item }) => {
-          if (item.role === 'separator') {
+          if (item.role === "separator") {
             return (
               <View style={styles.dateSeparator}>
                 <View style={styles.dateLine} />
@@ -278,7 +281,7 @@ export default function ChatScreen() {
               </View>
             );
           }
-          
+
           return (
             <MessageBubble
               message={item}
@@ -337,7 +340,8 @@ export default function ChatScreen() {
               <TouchableOpacity
                 style={[
                   styles.sendButton,
-                  (!message.trim() || isSubmitting) && styles.sendButtonDisabled,
+                  (!message.trim() || isSubmitting) &&
+                    styles.sendButtonDisabled,
                 ]}
                 onPress={handleSend}
                 disabled={!message.trim() || isSubmitting}
@@ -409,8 +413,8 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   dateSeparator: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: 16,
   },
   dateLine: {

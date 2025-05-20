@@ -21,7 +21,7 @@ export function useConversation(modelId: string) {
       console.log("Stopping AI response generation");
       isCancelled.current = true;
       abortControllerRef.current.abort();
-      
+
       // Finalize the current response if there is one
       if (responseBuffer.current) {
         const assistantMessage: Message = {
@@ -30,21 +30,24 @@ export function useConversation(modelId: string) {
           content: responseBuffer.current + " [Response stopped by user]",
           timestamp: Date.now(),
         };
-        
-        setMessages(prev => [...prev, assistantMessage]);
-        
+
+        setMessages((prev) => [...prev, assistantMessage]);
+
         // Update the conversation if it exists
         if (conversation) {
           const updatedMessages = [...messages, assistantMessage];
-          chatService.updateConversationMessages(conversation.id, updatedMessages)
-            .catch(err => console.error("Failed to save stopped message:", err));
+          chatService
+            .updateConversationMessages(conversation.id, updatedMessages)
+            .catch((err) =>
+              console.error("Failed to save stopped message:", err),
+            );
         }
-        
+
         // Clear the response buffer
         setCurrentResponse("");
         responseBuffer.current = "";
       }
-      
+
       // Reset loading state
       setIsLoading(false);
     }
@@ -54,11 +57,14 @@ export function useConversation(modelId: string) {
     try {
       console.log(`Loading conversation for model ${modelId}`);
       setIsLoading(true);
-      
+
       // Use the method to get or create an active conversation
-      const activeConversation = await chatService.getOrCreateActiveConversation(modelId);
-      console.log(`Got conversation with ${activeConversation.messages.length} messages`);
-      
+      const activeConversation =
+        await chatService.getOrCreateActiveConversation(modelId);
+      console.log(
+        `Got conversation with ${activeConversation.messages.length} messages`,
+      );
+
       setConversation(activeConversation);
       setMessages(activeConversation.messages);
       setError(null);
@@ -81,9 +87,13 @@ export function useConversation(modelId: string) {
       console.log("Manually refreshing conversation");
       if (conversation) {
         // Get the fresh conversation data
-        const refreshedConversation = await chatService.getConversation(conversation.id);
+        const refreshedConversation = await chatService.getConversation(
+          conversation.id,
+        );
         if (refreshedConversation) {
-          console.log(`Refreshed conversation with ${refreshedConversation.messages.length} messages`);
+          console.log(
+            `Refreshed conversation with ${refreshedConversation.messages.length} messages`,
+          );
           setConversation(refreshedConversation);
           setMessages(refreshedConversation.messages);
         } else {
@@ -110,7 +120,7 @@ export function useConversation(modelId: string) {
       setError(null);
       responseBuffer.current = "";
       isCancelled.current = false;
-      
+
       // Create a new AbortController for this request
       abortControllerRef.current = new AbortController();
       const signal = abortControllerRef.current.signal;
@@ -128,15 +138,15 @@ export function useConversation(modelId: string) {
 
         // Send the message via the service, which will persist it
         await chatService.sendMessage(
-          conversation.id, 
-          content, 
+          conversation.id,
+          content,
           (token) => {
             if (!isCancelled.current) {
               responseBuffer.current += token;
               setCurrentResponse(responseBuffer.current);
             }
           },
-          signal
+          signal,
         );
 
         // If we haven't been cancelled, finalize the response
@@ -154,7 +164,7 @@ export function useConversation(modelId: string) {
           setMessages((prev) => [...prev, assistantMessage]);
           setCurrentResponse("");
           responseBuffer.current = "";
-          
+
           // Refresh conversation to ensure we have the latest persisted state
           setTimeout(() => refreshConversation(), 300);
         }
@@ -164,11 +174,12 @@ export function useConversation(modelId: string) {
           console.log("Message processing was cancelled by user");
           return;
         }
-        
-        const errorMessage = err instanceof Error ? err.message : "Failed to send message";
+
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to send message";
         setError(errorMessage);
         console.error("Failed to send message:", err);
-        
+
         // Refresh to ensure UI state matches persisted state
         setTimeout(() => refreshConversation(), 300);
       } finally {
@@ -188,26 +199,26 @@ export function useConversation(modelId: string) {
       try {
         // Find the index of the message to delete
         const messageIndex = messages.findIndex((msg) => msg.id === messageId);
-        
+
         if (messageIndex === -1) {
           console.warn(`Message with id ${messageId} not found`);
           return;
         }
 
         // Make sure it's a user message
-        if (messages[messageIndex].role !== 'user') {
-          console.warn('Only user messages can be deleted directly');
+        if (messages[messageIndex].role !== "user") {
+          console.warn("Only user messages can be deleted directly");
           return;
         }
 
         // Check if there's a response message immediately after
-        const hasResponseAfter = 
-          messageIndex + 1 < messages.length && 
-          messages[messageIndex + 1].role === 'assistant';
+        const hasResponseAfter =
+          messageIndex + 1 < messages.length &&
+          messages[messageIndex + 1].role === "assistant";
 
         // Create a new array of messages excluding the deleted ones
         const updatedMessages = [...messages];
-        
+
         // If there's a response after this message, also remove that
         if (hasResponseAfter) {
           updatedMessages.splice(messageIndex, 2);
@@ -216,16 +227,19 @@ export function useConversation(modelId: string) {
         }
 
         // Update the conversation in the service
-        await chatService.updateConversationMessages(conversation.id, updatedMessages);
-        
+        await chatService.updateConversationMessages(
+          conversation.id,
+          updatedMessages,
+        );
+
         // Update local state
         setMessages(updatedMessages);
       } catch (err) {
-        const errorMessage = 
+        const errorMessage =
           err instanceof Error ? err.message : "Failed to delete message";
         setError(errorMessage);
         console.error("Failed to delete message:", err);
-        
+
         // Refresh to ensure UI state matches persisted state
         setTimeout(() => refreshConversation(), 300);
       }

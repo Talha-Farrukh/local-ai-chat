@@ -1,4 +1,12 @@
-import { Dimensions, Platform, StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
+import {
+  Dimensions,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import Markdown from "react-native-markdown-display";
 import { COLORS } from "../../lib/constants";
 import { formatDate, formatHTMLtoText } from "../../lib/utils";
@@ -8,7 +16,7 @@ interface MessageBubbleProps {
   message: Message;
   showTimestamp?: boolean;
   isStreaming?: boolean;
-  onLongPress?: (messageId: string) => void;  
+  onLongPress?: (messageId: string) => void;
 }
 
 export function MessageBubble({

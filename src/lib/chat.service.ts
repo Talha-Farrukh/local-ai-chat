@@ -37,14 +37,16 @@ export class ChatService {
       if (stored) {
         const conversations = JSON.parse(stored) as Conversation[];
         console.log(`Loaded ${conversations.length} conversations`);
-        
+
         // Clear existing conversations before loading new ones
         this.conversations.clear();
-        
+
         // Add all conversations to the map
         conversations.forEach((conv) => {
           this.conversations.set(conv.id, conv);
-          console.log(`Loaded conversation ${conv.id} with ${conv.messages.length} messages`);
+          console.log(
+            `Loaded conversation ${conv.id} with ${conv.messages.length} messages`,
+          );
         });
       } else {
         console.log("No conversations found in storage");
@@ -58,12 +60,14 @@ export class ChatService {
     try {
       const conversations = Array.from(this.conversations.values());
       console.log(`Saving ${conversations.length} conversations to storage`);
-      
+
       // Log details about each conversation being saved
-      conversations.forEach(conv => {
-        console.log(`Saving conversation ${conv.id} with ${conv.messages.length} messages`);
+      conversations.forEach((conv) => {
+        console.log(
+          `Saving conversation ${conv.id} with ${conv.messages.length} messages`,
+        );
       });
-      
+
       await AsyncStorage.setItem(
         CONVERSATIONS_STORAGE_KEY,
         JSON.stringify(conversations),
@@ -136,34 +140,36 @@ export class ChatService {
    */
   async getOrCreateActiveConversation(modelId: string): Promise<Conversation> {
     await this.ensureInitialized();
-    
+
     // Find any conversation for this model
     const modelConversations = Array.from(this.conversations.values())
-      .filter(c => c.modelId === modelId)
+      .filter((c) => c.modelId === modelId)
       .sort((a, b) => b.updatedAt - a.updatedAt);
-    
+
     // Always use the most recent conversation (no expiration for now)
     const latestConversation = modelConversations[0];
-    
+
     if (latestConversation) {
-      console.log(`Using existing conversation ${latestConversation.id} with ${latestConversation.messages.length} messages`);
-      
+      console.log(
+        `Using existing conversation ${latestConversation.id} with ${latestConversation.messages.length} messages`,
+      );
+
       // Preload the model for this conversation for better UX
-      this.loadModel(modelId).catch(err => {
+      this.loadModel(modelId).catch((err) => {
         console.error("Failed to preload model:", err);
       });
-      
+
       return latestConversation;
     }
-    
+
     // Create a new conversation if none exists
     console.log("Creating new conversation for model", modelId);
     const dateStr = new Date().toLocaleDateString();
     const newConversation = await this.createConversation(
       modelId,
-      `Chat - ${dateStr}`
+      `Chat - ${dateStr}`,
     );
-    
+
     return newConversation;
   }
 
@@ -172,7 +178,7 @@ export class ChatService {
     name: string,
   ): Promise<Conversation> {
     await this.ensureInitialized();
-    
+
     const conversation: Conversation = {
       id: Date.now().toString(),
       modelId,
@@ -183,14 +189,16 @@ export class ChatService {
     };
 
     this.conversations.set(conversation.id, conversation);
-    console.log(`Created new conversation ${conversation.id} for model ${modelId}`);
+    console.log(
+      `Created new conversation ${conversation.id} for model ${modelId}`,
+    );
     await this.saveConversations();
     return conversation;
   }
 
   async deleteConversation(conversationId: string): Promise<void> {
     await this.ensureInitialized();
-    
+
     this.conversations.delete(conversationId);
     console.log(`Deleted conversation ${conversationId}`);
     await this.saveConversations();
@@ -198,22 +206,22 @@ export class ChatService {
 
   async getConversations(): Promise<Conversation[]> {
     await this.ensureInitialized();
-    
+
     return Array.from(this.conversations.values());
   }
 
   async getConversation(conversationId: string): Promise<Conversation | null> {
     await this.ensureInitialized();
-    
+
     return this.conversations.get(conversationId) || null;
   }
 
   async updateConversationMessages(
     conversationId: string,
-    messages: Message[]
+    messages: Message[],
   ): Promise<void> {
     await this.ensureInitialized();
-    
+
     const conversation = this.conversations.get(conversationId);
     if (!conversation) {
       throw new Error("Conversation not found");
@@ -221,7 +229,9 @@ export class ChatService {
 
     conversation.messages = messages;
     conversation.updatedAt = Date.now();
-    console.log(`Updated conversation ${conversationId} with ${messages.length} messages`);
+    console.log(
+      `Updated conversation ${conversationId} with ${messages.length} messages`,
+    );
     await this.saveConversations();
   }
 
@@ -232,14 +242,14 @@ export class ChatService {
     signal?: AbortSignal,
   ): Promise<void> {
     await this.ensureInitialized();
-    
+
     const conversation = this.conversations.get(conversationId);
     if (!conversation) {
       throw new Error("Conversation not found");
     }
 
     // We're not checking for expiration to ensure messages are not lost
-    
+
     if (!this.activeContext || this.activeModelId !== conversation.modelId) {
       await this.loadModel(conversation.modelId);
     }
@@ -257,7 +267,7 @@ export class ChatService {
 
     conversation.messages.push(userMessage);
     conversation.updatedAt = Date.now();
-    
+
     // Save immediately after adding user message
     await this.saveConversations();
     console.log(`Added user message to conversation ${conversationId}`);
@@ -287,7 +297,7 @@ export class ChatService {
       // Add signal handler to check for aborts
       if (signal) {
         // Monitor the signal for cancellation
-        signal.addEventListener('abort', () => {
+        signal.addEventListener("abort", () => {
           console.log("Abort signal received in ChatService");
         });
       }
@@ -311,7 +321,7 @@ export class ChatService {
 
       conversation.messages.push(assistantMessage);
       conversation.updatedAt = Date.now();
-      
+
       // Save again after adding AI response
       await this.saveConversations();
       console.log(`Added AI response to conversation ${conversationId}`);
@@ -321,7 +331,7 @@ export class ChatService {
         console.log("Request was aborted, not saving error state");
         throw new Error("Request aborted by user");
       }
-      
+
       console.error("Failed to get model response:", error);
       throw error;
     }
@@ -333,12 +343,12 @@ export class ChatService {
    */
   async cleanupOldConversations(olderThanDays: number = 7): Promise<void> {
     await this.ensureInitialized();
-    
+
     const now = Date.now();
-    const threshold = now - (olderThanDays * ONE_DAY_MS);
-    
+    const threshold = now - olderThanDays * ONE_DAY_MS;
+
     let hasDeleted = false;
-    
+
     for (const [id, conversation] of this.conversations.entries()) {
       if (conversation.updatedAt < threshold) {
         this.conversations.delete(id);
@@ -346,7 +356,7 @@ export class ChatService {
         console.log(`Cleaned up old conversation ${id}`);
       }
     }
-    
+
     if (hasDeleted) {
       await this.saveConversations();
     }
