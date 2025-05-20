@@ -1,6 +1,6 @@
-# React Native Boilerplate 👋
+# Offgrid AI 🤖
 
-This is a React Native boilerplate created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app), using [Expo](https://expo.dev) and [React Native](https://reactnative.dev), with [Typescript](https://www.typescriptlang.org/), [Yarn](https://yarnpkg.com/), [Nativewind](https://www.nativewind.dev/), [Prettier](https://prettier.io/), [ESLint](https://eslint.org/).
+A powerful React Native Expo application that enables users to download and interact with Large Language Models (LLMs) directly on their device. Built with [Expo](https://expo.dev) and [React Native](https://reactnative.dev), using [Typescript](https://www.typescriptlang.org/), [Yarn](https://yarnpkg.com/), [Jotai](https://jotai.org/), [Prettier](https://prettier.io/), and [ESLint](https://eslint.org/).
 
 ## Get started
 
@@ -25,9 +25,9 @@ In the output, you'll find options to open the app in a
 
 ## Development Tools
 
-### Nativewind
+### Jotai
 
-This project uses [Nativewind](https://www.nativewind.dev/) for styling with Tailwind CSS.
+[Jotai](https://jotai.org/) is used for state management with an atomic approach.
 
 ### Prettier
 
@@ -49,14 +49,43 @@ This project uses [Nativewind](https://www.nativewind.dev/) for styling with Tai
 
 - [Expo documentation](https://docs.expo.dev/)
 - [React Native documentation](https://reactnative.dev/)
-- [NativeWind documentation](https://www.nativewind.dev/)
+- [Jotai documentation](https://jotai.org/)
 - [TypeScript documentation](https://www.typescriptlang.org/)
+- [Hugging Face](https://huggingface.co/) - Source for LLM models
 
 ## Features
 
+### 🤖 LLM Integration
+
+Offgrid AI provides a comprehensive platform for interacting with LLMs:
+
+#### Model Management
+
+- Browse and download models directly from Hugging Face
+- Track download progress
+- Manage downloaded models
+- Persistent storage of models on device
+- Model metadata storage and caching
+
+#### Chat Interface
+
+- Modern ChatGPT-like design
+- Real-time message streaming
+- Markdown rendering for AI responses
+- Message history persistence
+- Conversation management
+- Model switching capability
+
+#### Data Persistence
+
+- Models stored in app's file system
+- Chat history stored using AsyncStorage
+- Model metadata cached for quick access
+- Download state persistence
+
 ### 🎨 UI Components
 
-The boilerplate includes a set of pre-built, customizable UI components:
+The app includes a set of pre-built, customizable UI components:
 
 #### Typography
 
@@ -71,60 +100,58 @@ The boilerplate includes a set of pre-built, customizable UI components:
 - Loading state support with customizable loading text
 - Disabled state styling
 - Platform-specific touch feedback
-- NativeWind styling integration
 
-#### Bottom Sheet
+#### Message Bubble
 
-- Customizable snap points
-- Gesture handling for pan and dismiss
-- Backdrop with customizable opacity
-- Dynamic sizing support
-- Platform-specific animations
+- User and AI message differentiation
+- Markdown rendering for AI responses
+- Timestamp display
+- Streaming indicator
+- Responsive design
 
 ### 🛠 Technical Features
 
-- **SVG Support**: Integrated SVG transformer for using SVG files as React components
+- **LLM Integration**: Uses llama.rn for model inference
+- **Hugging Face API**: Fetch and download models from Hugging Face
+- **File System**: Implements expo-file-system for model downloads and storage
+- **State Management**: Jotai for global state with persistent storage
 - **Type Safety**: Full TypeScript support with strict type checking
-- **Styling**: NativeWind (Tailwind CSS) integration for consistent styling
-- **Theming**: Custom CSS variables for easy theme customization
-- **Animations**: React Native Reanimated integration for smooth animations
+- **Streaming**: Real-time response streaming from models
+- **Error Handling**: Comprehensive error handling and recovery
+- **Performance**: Optimized for mobile devices with background processing
 
-## Component Usage Examples
+## Main Screens
 
-### Typography
+### Model Library
 
 ```tsx
-<Text variant="h1" weight="bold">Heading 1</Text>
-<Text variant="p1" weight="regular">Regular paragraph text</Text>
-<Text variant="p2" weight="medium" className="text-gray-500">Medium weight text</Text>
+// Browse available models from Hugging Face
+<ModelLibrary
+  onSelectModel={handleModelSelect}
+  onDownloadModel={handleDownloadModel}
+/>
 ```
 
-### Button
+### Downloaded Models
 
 ```tsx
-<Button>
-  <Text>Default Button</Text>
-</Button>
-
-<Button variant="secondary" loading loadingText="Processing...">
-  <Text>Loading Button</Text>
-</Button>
+// View and manage downloaded models
+<DownloadedModels
+  models={downloadedModels}
+  onDeleteModel={handleDeleteModel}
+  onSelectModel={handleSelectForChat}
+/>
 ```
 
-### Bottom Sheet
+### Chat Screen
 
 ```tsx
-const bottomSheetRef = useRef<BottomSheetModal>(null);
-
-<CustomBottomSheet
-  ref={bottomSheetRef}
-  snapPoints={["30%", "50%", "75%"]}
-  enablePanDownToClose
->
-  <View className="p-4">
-    <Text>Bottom Sheet Content</Text>
-  </View>
-</CustomBottomSheet>;
+// Interact with selected model
+<ChatScreen
+  modelId={selectedModel.id}
+  conversation={activeConversation}
+  onSendMessage={handleSendMessage}
+/>
 ```
 
 ## Project Structure
@@ -133,9 +160,46 @@ The project follows a well-organized structure:
 
 ```
 src/
-├── app/          # File-based routing pages
-├── components/   # Reusable UI components
-│   └── ui/       # Core UI components
-├── lib/          # Utility functions and constants
-└── assets/       # Images, fonts, and other static files
+├── app/                    # Expo Router app directory
+├── assets/                 # Static assets (images, fonts)
+├── components/
+│   ├── ui/                # Reusable UI components
+│   ├── model/             # Model-related components
+│   └── chat/              # Chat interface components
+├── config/                # App configuration
+├── hooks/                 # Custom React hooks
+├── lib/                   # Utility functions and services
+├── types/                 # TypeScript type definitions
+├── constants/             # App constants
+└── providers/             # Context providers
 ```
+
+## Performance Considerations
+
+- Lazy loading of models
+- Efficient memory management
+- Background download handling
+- Response streaming optimization
+- UI performance optimization
+
+## Security
+
+- Secure storage of downloaded models
+- API key management
+- Input validation
+- Error handling
+
+## Testing
+
+- Unit tests for utilities
+- Component testing
+- Integration testing
+- E2E testing with Jest
+
+## Future Improvements
+
+- Multiple model chat
+- Custom model import
+- Advanced chat features
+- Performance optimizations
+- Cross-platform enhancements
