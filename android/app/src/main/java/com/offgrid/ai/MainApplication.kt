@@ -1,4 +1,4 @@
-package com.anonymous.reactnativeboilerplate
+package com.offgrid.ai
 
 import android.app.Application
 import android.content.res.Configuration

@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { COLORS } from '../../lib/constants';
-import { useInternetConnection } from '../../hooks/useInternetConnection';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { COLORS } from "../../lib/constants";
+import { useInternetConnection } from "../../hooks/useInternetConnection";
 
 export function OfflineNotice() {
   const { isOffline } = useInternetConnection();
@@ -21,12 +21,12 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.STATUS.ERROR,
     padding: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   text: {
     color: COLORS.TEXT.INVERSE,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
-}); 
+});

@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { COLORS } from '../../lib/constants';
+import React from "react";
+import { View, StyleSheet, Text } from "react-native";
+import { COLORS } from "../../lib/constants";
 
 interface ProgressBarProps {
   progress: number;
@@ -50,12 +50,12 @@ export function ProgressBar({
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: "100%",
   },
   track: {
-    width: '100%',
+    width: "100%",
     borderRadius: 4,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   progress: {
     borderRadius: 4,
@@ -64,6 +64,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 12,
     color: COLORS.TEXT.SECONDARY,
-    textAlign: 'center',
+    textAlign: "center",
   },
-}); 
+});

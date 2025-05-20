@@ -1,17 +1,17 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Platform } from 'react-native';
+import { Platform } from "react-native";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export function formatBytes(bytes: number, decimals = 2): string {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return "0 Bytes";
 
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
 
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
@@ -20,14 +20,14 @@ export function formatBytes(bytes: number, decimals = 2): string {
 
 export function formatDate(date: number): string {
   return new Date(date).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
+    year: "numeric",
+    month: "short",
+    day: "numeric",
   });
 }
 
 export function isIOS(): boolean {
-  return Platform.OS === 'ios';
+  return Platform.OS === "ios";
 }
 
 export function generateId(): string {
@@ -36,7 +36,7 @@ export function generateId(): string {
 
 export function debounce<T extends (...args: any[]) => void>(
   func: T,
-  wait: number
+  wait: number,
 ): (...args: Parameters<T>) => void {
   let timeoutId: ReturnType<typeof setTimeout>;
 
@@ -49,4 +49,11 @@ export function debounce<T extends (...args: any[]) => void>(
     clearTimeout(timeoutId);
     timeoutId = setTimeout(later, wait);
   };
+}
+
+// Remove html tags from text
+export function formatHTMLtoText(text: string): string {
+  // If text is undefined, return an empty string
+  if (!text) return "";
+  return text?.replace(/<[^>]*>?/g, "");
 }

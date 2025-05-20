@@ -1,16 +1,17 @@
-import { Theme, ThemeProvider } from "@react-navigation/native";
-import { SplashScreen } from "expo-router";
-import React, { ReactNode, useEffect } from "react";
-import { Platform, Linking } from "react-native";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { StatusBar } from "expo-status-bar";
-import { useInternetConnection } from "@/hooks/useInternetConnection";
-import NetInfo from "@react-native-community/netinfo";
-import { NoInternetModal } from "@/components/ui/no-internet-modal";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { PortalHost } from "@rn-primitives/portal";
 import { NAV_THEME } from "@/lib/constants";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { Theme, ThemeProvider } from "@react-navigation/native";
+import { PortalHost } from "@rn-primitives/portal";
+import { SplashScreen } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { ReactNode, useEffect } from "react";
+import { Platform, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const LIGHT_THEME: Theme = {
   dark: false,
@@ -40,6 +41,22 @@ const queryClient = new QueryClient();
 // Prevent the splash screen from auto-hiding before app is ready
 SplashScreen.preventAutoHideAsync();
 
+function AppContent({ children }: Readonly<{ children: ReactNode }>) {
+  const insets = useSafeAreaInsets();
+
+  return (
+    <View
+      className="flex-1"
+      style={{
+        paddingTop: Platform.OS === "ios" ? 0 : insets.top,
+      }}
+    >
+      {children}
+      <PortalHost />
+    </View>
+  );
+}
+
 export default function RootProvider({
   children,
 }: Readonly<{ children: ReactNode }>) {
@@ -55,13 +72,14 @@ export default function RootProvider({
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider value={LIGHT_THEME}>
-        <GestureHandlerRootView className="flex-1">
-          <BottomSheetModalProvider>
-            <StatusBar style="dark" />
-            {children}
-            <PortalHost />
-          </BottomSheetModalProvider>
-        </GestureHandlerRootView>
+        <SafeAreaProvider>
+          <GestureHandlerRootView>
+            <BottomSheetModalProvider>
+              <StatusBar style="dark" />
+              <AppContent>{children}</AppContent>
+            </BottomSheetModalProvider>
+          </GestureHandlerRootView>
+        </SafeAreaProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

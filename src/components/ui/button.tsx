@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   TouchableOpacity,
   Text,
@@ -7,11 +7,11 @@ import {
   ViewStyle,
   TextStyle,
   TouchableOpacityProps,
-} from 'react-native';
-import { COLORS } from '../../lib/constants';
+} from "react-native";
+import { COLORS } from "../../lib/constants";
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
+export type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends TouchableOpacityProps {
   variant?: ButtonVariant;
@@ -23,8 +23,8 @@ interface ButtonProps extends TouchableOpacityProps {
 }
 
 export function Button({
-  variant = 'primary',
-  size = 'md',
+  variant = "primary",
+  size = "md",
   isLoading = false,
   leftIcon,
   rightIcon,
@@ -38,10 +38,10 @@ export function Button({
 
     // Add size styles
     switch (size) {
-      case 'sm':
+      case "sm":
         styles.push(baseStyles.containerSm);
         break;
-      case 'lg':
+      case "lg":
         styles.push(baseStyles.containerLg);
         break;
       default:
@@ -50,13 +50,13 @@ export function Button({
 
     // Add variant styles
     switch (variant) {
-      case 'secondary':
+      case "secondary":
         styles.push(baseStyles.containerSecondary);
         break;
-      case 'outline':
+      case "outline":
         styles.push(baseStyles.containerOutline);
         break;
-      case 'ghost':
+      case "ghost":
         styles.push(baseStyles.containerGhost);
         break;
       default:
@@ -76,10 +76,10 @@ export function Button({
 
     // Add size styles
     switch (size) {
-      case 'sm':
+      case "sm":
         styles.push(baseStyles.textSm);
         break;
-      case 'lg':
+      case "lg":
         styles.push(baseStyles.textLg);
         break;
       default:
@@ -88,13 +88,13 @@ export function Button({
 
     // Add variant styles
     switch (variant) {
-      case 'secondary':
+      case "secondary":
         styles.push(baseStyles.textSecondary);
         break;
-      case 'outline':
+      case "outline":
         styles.push(baseStyles.textOutline);
         break;
-      case 'ghost':
+      case "ghost":
         styles.push(baseStyles.textGhost);
         break;
       default:
@@ -117,8 +117,10 @@ export function Button({
     >
       {isLoading ? (
         <ActivityIndicator
-          color={variant === 'primary' ? COLORS.TEXT.INVERSE : COLORS.TEXT.PRIMARY}
-          size={size === 'sm' ? 'small' : 'small'}
+          color={
+            variant === "primary" ? COLORS.TEXT.INVERSE : COLORS.TEXT.PRIMARY
+          }
+          size={size === "sm" ? "small" : "small"}
         />
       ) : (
         <>
@@ -133,9 +135,9 @@ export function Button({
 
 const baseStyles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 8,
     gap: 8,
   },
@@ -158,18 +160,18 @@ const baseStyles = StyleSheet.create({
     backgroundColor: COLORS.SECONDARY,
   },
   containerOutline: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderWidth: 1,
     borderColor: COLORS.PRIMARY,
   },
   containerGhost: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   containerDisabled: {
     opacity: 0.5,
   },
   text: {
-    fontWeight: '600',
+    fontWeight: "600",
   },
   textSm: {
     fontSize: 14,

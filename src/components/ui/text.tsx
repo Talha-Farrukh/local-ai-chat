@@ -42,7 +42,7 @@ const Text = React.forwardRef<TextRef, TextProps>(
     return (
       <RNText
         className={cn(
-          "text-base text-foreground  web:select-text",
+          "text-base text-foreground  web:select-text dark:text-white",
           textClass,
           className,
           textVariants({ variant, weight, className }),

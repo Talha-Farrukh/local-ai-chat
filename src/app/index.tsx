@@ -14,7 +14,6 @@ import { ModelCard } from "../components/model/ModelCard";
 import { EmptyState } from "../components/ui/EmptyState";
 import { ErrorMessage } from "../components/ui/ErrorMessage";
 import { LoadingSpinner } from "../components/ui/LoadingSpinner";
-import { OfflineNotice } from "../components/ui/OfflineNotice";
 import { useModels } from "../hooks/useModels";
 import { COLORS } from "../lib/constants";
 
@@ -29,10 +28,11 @@ export default function ModelsScreen() {
     downloadedModels,
     downloading,
     error,
-    isLoading,
+    isLoadingDownloaded,
+    isLoadingAvailable,
+    isConnected,
     downloadModel,
     deleteModel,
-    loadModels,
   } = useModels();
 
   const handleModelPress = (modelId: string) => {
@@ -56,7 +56,7 @@ export default function ModelsScreen() {
           style: "destructive",
           onPress: () => deleteModel(modelId),
         },
-      ]
+      ],
     );
   };
 
@@ -70,16 +70,19 @@ export default function ModelsScreen() {
       (model) =>
         model.name.toLowerCase().includes(query) ||
         model.description.toLowerCase().includes(query) ||
-        model.tags.some((tag) => tag.toLowerCase().includes(query))
+        model.tags.some((tag) => tag.toLowerCase().includes(query)),
     );
   }, [activeTab, searchQuery, downloadedModels, availableModels]);
 
   const renderContent = () => {
-    if (error) {
-      return <ErrorMessage message={error} onRetry={loadModels} fullScreen />;
+    const isLoading =
+      activeTab === "downloaded" ? isLoadingDownloaded : isLoadingAvailable;
+
+    if (error && activeTab === "downloaded") {
+      return <ErrorMessage message={error} onRetry={() => {}} fullScreen />;
     }
 
-    if (isLoading) {
+    if (isLoading && (activeTab === "downloaded" || isConnected)) {
       return (
         <LoadingSpinner
           text={`Loading ${activeTab === "downloaded" ? "downloaded" : "available"} models...`}
@@ -90,59 +93,65 @@ export default function ModelsScreen() {
 
     const models = filteredModels();
     if (models.length === 0) {
+      let title, description;
+      if (searchQuery) {
+        title = "No matches found";
+        description = `No models match your search "${searchQuery}"`;
+      } else if (activeTab === "downloaded") {
+        title = "No Downloaded Models";
+        description =
+          "You haven't downloaded any models yet. Switch to 'All Models' to browse available models.";
+      } else {
+        title = isConnected ? "No Models Available" : "No Internet Connection";
+        description = isConnected
+          ? "There are no models available at the moment. Please try again later."
+          : "Connect to the internet to browse available models. Models will be loaded automatically when connected.";
+      }
+
       return (
         <EmptyState
-          title={
-            searchQuery
-              ? "No matches found"
-              : activeTab === "downloaded"
-                ? "No Downloaded Models"
-                : "No Models Available"
-          }
-          description={
-            searchQuery
-              ? `No models match your search "${searchQuery}"`
-              : activeTab === "downloaded"
-                ? "You haven't downloaded any models yet. Switch to 'All Models' to browse available models."
-                : "There are no models available at the moment. Please check your internet connection and try again."
-          }
+          title={title}
+          description={description}
           icon={
             <Ionicons
-              name={searchQuery ? "search-outline" : "cube-outline"}
+              name={
+                searchQuery
+                  ? "search-outline"
+                  : isConnected
+                    ? "cube-outline"
+                    : "wifi-outline"
+              }
               size={48}
               color={COLORS.TEXT.SECONDARY}
             />
           }
-          actionLabel={searchQuery ? "Clear Search" : "Retry"}
-          onAction={searchQuery ? () => setSearchQuery("") : loadModels}
+          actionLabel={searchQuery ? "Clear Search" : undefined}
+          onAction={searchQuery ? () => setSearchQuery("") : undefined}
         />
       );
     }
 
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <FlatList
-          data={models}
-          keyExtractor={(model) => model.id}
-          renderItem={({ item: model }) => (
-            <ModelCard
-              model={model}
-              onPress={() => handleModelPress(model.id)}
-              onDownload={() => downloadModel(model)}
-              onDelete={() => handleDeleteModel(model.id, model.name)}
-              downloadProgress={downloading[model.id]}
-              isDownloading={downloading[model.id] !== undefined}
-            />
-          )}
-        />
-      </View>
+      <FlatList
+        data={models}
+        keyExtractor={(model) => model.id}
+        renderItem={({ item: model }) => (
+          <ModelCard
+            model={model}
+            onPress={() => handleModelPress(model.id)}
+            onDownload={() => downloadModel(model)}
+            onDelete={() => handleDeleteModel(model.id, model.name)}
+            downloadProgress={downloading[model.id]}
+            isDownloading={downloading[model.id] !== undefined}
+          />
+        )}
+        contentContainerStyle={styles.listContent}
+      />
     );
   };
 
   return (
     <View style={styles.container}>
-      <OfflineNotice />
-
       {/* Tabs */}
       <View style={styles.tabsContainer}>
         <TouchableOpacity
@@ -217,7 +226,6 @@ export default function ModelsScreen() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -257,7 +265,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 16,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 10,
     backgroundColor: COLORS.SURFACE,
     borderRadius: 12,
     borderWidth: 1,
@@ -269,5 +277,8 @@ const styles = StyleSheet.create({
     marginRight: 8,
     fontSize: 16,
     color: COLORS.TEXT.PRIMARY,
+  },
+  listContent: {
+    paddingHorizontal: 16,
   },
 });

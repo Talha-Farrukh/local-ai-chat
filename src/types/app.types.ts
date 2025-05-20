@@ -6,7 +6,7 @@
 
 export interface Message {
   id: string;
-  role: 'system' | 'user' | 'assistant';
+  role: "system" | "user" | "assistant";
   content: string;
   timestamp: number;
 }
@@ -32,6 +32,8 @@ export interface Model {
   tags: string[];
   parameters: string | number;
   lastModified: string;
+  usedStorage: number;
+  downloadCount: number;
 }
 
 export interface DownloadedModel extends Model {
@@ -40,10 +42,13 @@ export interface DownloadedModel extends Model {
 }
 
 export interface ModelContext {
-  completion: (params: {
-    messages: Message[];
-    n_predict: number;
-    stop: string[];
-  }, callback?: (data: { token: string }) => void) => Promise<{ text: string }>;
+  completion: (
+    params: {
+      messages: Message[];
+      n_predict: number;
+      stop: string[];
+    },
+    callback?: (data: { token: string }) => void,
+  ) => Promise<{ text: string }>;
   release: () => Promise<void>;
 }

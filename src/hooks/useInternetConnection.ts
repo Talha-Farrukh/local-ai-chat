@@ -5,12 +5,12 @@ export function useInternetConnection() {
   const [isConnected, setIsConnected] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       setIsConnected(state.isConnected);
     });
 
     // Initial check
-    NetInfo.fetch().then(state => {
+    NetInfo.fetch().then((state) => {
       setIsConnected(state.isConnected);
     });
 

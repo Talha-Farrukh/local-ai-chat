@@ -1,23 +1,23 @@
 {
   "expo": {
-    "name": "local-ai-chat",
-    "slug": "local-ai-chat",
+    "name": "Offgrid AI",
+    "slug": "offgrid-ai",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "offgrid-ai",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.reactnativeboilerplate"
+      "bundleIdentifier": "com.offgrid.ai"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#051e2e"
       },
-      "package": "com.anonymous.reactnativeboilerplate"
+      "package": "com.offgrid.ai"
     },
     "web": {
       "bundler": "metro",
@@ -32,7 +32,7 @@
           "image": "./src/assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#051e2e"
         }
       ]
     ],

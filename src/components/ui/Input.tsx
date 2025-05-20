@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   TextInput,
   TextInputProps,
@@ -7,8 +7,8 @@ import {
   Text,
   ViewStyle,
   TextStyle,
-} from 'react-native';
-import { COLORS } from '../../lib/constants';
+} from "react-native";
+import { COLORS } from "../../lib/constants";
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -26,7 +26,7 @@ export function Input({
   rightIcon,
   style,
   ...props
-}: InputProps) {
+}: Readonly<InputProps>) {
   return (
     <View style={[styles.container, containerStyle]}>
       {label && <Text style={styles.label}>{label}</Text>}
@@ -61,13 +61,13 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
     color: COLORS.TEXT.SECONDARY,
     marginBottom: 8,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: COLORS.SURFACE,
     borderWidth: 1,
     borderColor: COLORS.BORDER,
@@ -105,4 +105,4 @@ const styles = StyleSheet.create({
     color: COLORS.STATUS.ERROR,
     marginTop: 4,
   },
-}); 
+});

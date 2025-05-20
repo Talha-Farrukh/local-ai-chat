@@ -1,20 +1,20 @@
-import React from 'react';
-import { View, ActivityIndicator, StyleSheet, Text } from 'react-native';
-import { COLORS } from '../../lib/constants';
+import React from "react";
+import { View, ActivityIndicator, StyleSheet, Text } from "react-native";
+import { COLORS } from "../../lib/constants";
 
 interface LoadingSpinnerProps {
-  size?: 'small' | 'large';
+  size?: "small" | "large";
   color?: string;
   text?: string;
   fullScreen?: boolean;
 }
 
 export function LoadingSpinner({
-  size = 'large',
+  size = "large",
   color = COLORS.PRIMARY,
   text,
   fullScreen = false,
-}: LoadingSpinnerProps) {
+}: Readonly<LoadingSpinnerProps>) {
   if (fullScreen) {
     return (
       <View style={styles.fullScreen}>
@@ -35,18 +35,18 @@ export function LoadingSpinner({
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   fullScreen: {
     flex: 1,
     backgroundColor: COLORS.BACKGROUND,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   text: {
     marginTop: 8,
     fontSize: 14,
     color: COLORS.TEXT.SECONDARY,
   },
-}); 
+});

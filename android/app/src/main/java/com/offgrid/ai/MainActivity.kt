@@ -1,4 +1,4 @@
-package com.anonymous.reactnativeboilerplate
+package com.offgrid.ai
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

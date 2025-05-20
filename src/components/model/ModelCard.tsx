@@ -1,11 +1,17 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
-import { Model } from '../../types/app.types';
-import { formatBytes } from '../../lib/utils';
-import { COLORS } from '../../lib/constants';
-import { Button } from '../ui/button';
-import { Ionicons } from '@expo/vector-icons';
-import { ProgressBar } from '../ui/ProgressBar';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
+import { Model } from "../../types/app.types";
+import { formatBytes } from "../../lib/utils";
+import { COLORS } from "../../lib/constants";
+import { Button } from "../ui/button";
+import { Ionicons } from "@expo/vector-icons";
+import { ProgressBar } from "../ui/ProgressBar";
 
 interface ModelCardProps {
   model: Model;
@@ -33,14 +39,18 @@ export function ModelCard({
       {/* Model Icon and Status */}
       <View style={styles.header}>
         <View style={styles.iconContainer}>
-          <Ionicons 
-            name={model.downloaded ? "cube" : "cube-outline"} 
-            size={28} 
-            color={model.downloaded ? COLORS.PRIMARY : COLORS.TEXT.SECONDARY} 
+          <Ionicons
+            name={model.downloaded ? "cube" : "cube-outline"}
+            size={28}
+            color={model.downloaded ? COLORS.PRIMARY : COLORS.TEXT.SECONDARY}
           />
           {model.downloaded && (
             <View style={styles.statusBadge}>
-              <Ionicons name="checkmark-circle" size={16} color={COLORS.STATUS.SUCCESS} />
+              <Ionicons
+                name="checkmark-circle"
+                size={16}
+                color={COLORS.STATUS.SUCCESS}
+              />
             </View>
           )}
         </View>
@@ -65,7 +75,7 @@ export function ModelCard({
         {/* Tags */}
         <View style={styles.tags}>
           {model.tags.map((tag, index) => (
-            <View key={"tags"+index} style={styles.tag}>
+            <View key={"tags" + index} style={styles.tag}>
               <Text style={styles.tagText}>{tag}</Text>
             </View>
           ))}
@@ -74,24 +84,48 @@ export function ModelCard({
         {/* Model Details */}
         <View style={styles.details}>
           <View style={styles.detailItem}>
-            <Ionicons name="file-tray-outline" size={16} color={COLORS.TEXT.SECONDARY} />
+            <Ionicons
+              name="file-tray-outline"
+              size={16}
+              color={COLORS.TEXT.SECONDARY}
+            />
             <Text style={styles.detailText}>{model.file}</Text>
           </View>
           <View style={styles.detailItem}>
-            <Ionicons name="git-branch-outline" size={16} color={COLORS.TEXT.SECONDARY} />
-            <Text style={styles.detailText}>{model.repo.split('/')[1]}</Text>
+            <Ionicons
+              name="git-branch-outline"
+              size={16}
+              color={COLORS.TEXT.SECONDARY}
+            />
+            <Text style={styles.detailText}>{model.repo.split("/")[1]}</Text>
           </View>
           <View style={styles.detailItem}>
-            <Ionicons name="cube-outline" size={16} color={COLORS.TEXT.SECONDARY} />
-            <Text style={styles.detailText}>{formatBytes(model.size)}</Text>
+            <Ionicons
+              name="cube-outline"
+              size={16}
+              color={COLORS.TEXT.SECONDARY}
+            />
+            <Text style={styles.detailText}>
+              {formatBytes(model.usedStorage)}
+            </Text>
           </View>
           <View style={styles.detailItem}>
-            <Ionicons name="time-outline" size={16} color={COLORS.TEXT.SECONDARY} />
+            <Ionicons
+              name="time-outline"
+              size={16}
+              color={COLORS.TEXT.SECONDARY}
+            />
             <Text style={styles.detailText}>Updated {model.lastModified}</Text>
           </View>
           <View style={styles.detailItem}>
-            <Ionicons name="layers-outline" size={16} color={COLORS.TEXT.SECONDARY} />
-            <Text style={styles.detailText}>{model.parameters} parameters</Text>
+            <Ionicons
+              name="layers-outline"
+              size={16}
+              color={COLORS.TEXT.SECONDARY}
+            />
+            <Text style={styles.detailText}>
+              {model.downloadCount} downloads
+            </Text>
           </View>
         </View>
       </View>
@@ -100,7 +134,7 @@ export function ModelCard({
       <View style={styles.footer}>
         {isDownloading ? (
           <View style={styles.downloadingContainer}>
-            <ProgressBar 
+            <ProgressBar
               progress={downloadProgress ?? 0}
               height={4}
               showPercentage={false}
@@ -113,19 +147,26 @@ export function ModelCard({
           <View style={styles.actions}>
             {model.downloaded ? (
               <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onPress={onPress}
-                >
+                <Button variant="outline" size="sm" onPress={onPress}>
                   <View style={styles.buttonContent}>
-                    <Ionicons name="chatbubble-outline" size={18} color={COLORS.PRIMARY} />
+                    <Ionicons
+                      name="chatbubble-outline"
+                      size={18}
+                      color={COLORS.PRIMARY}
+                    />
                     <Text style={styles.buttonText}>Chat</Text>
                   </View>
                 </Button>
                 {onDelete && (
-                  <TouchableOpacity onPress={onDelete} style={styles.deleteButton}>
-                    <Ionicons name="trash-outline" size={20} color={COLORS.STATUS.ERROR} />
+                  <TouchableOpacity
+                    onPress={onDelete}
+                    style={styles.deleteButton}
+                  >
+                    <Ionicons
+                      name="trash-outline"
+                      size={20}
+                      color={COLORS.STATUS.ERROR}
+                    />
                   </TouchableOpacity>
                 )}
               </>
@@ -137,8 +178,14 @@ export function ModelCard({
                 isLoading={isDownloading}
               >
                 <View style={styles.buttonContent}>
-                  <Ionicons name="download-outline" size={18} color={COLORS.TEXT.INVERSE} />
-                  <Text style={[styles.buttonText, { color: COLORS.TEXT.INVERSE }]}>
+                  <Ionicons
+                    name="download-outline"
+                    size={18}
+                    color={COLORS.TEXT.INVERSE}
+                  />
+                  <Text
+                    style={[styles.buttonText, { color: COLORS.TEXT.INVERSE }]}
+                  >
                     Download
                   </Text>
                 </View>
@@ -151,7 +198,7 @@ export function ModelCard({
   );
 }
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
@@ -174,31 +221,31 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   iconContainer: {
-    position: 'relative',
+    position: "relative",
     width: 40,
     height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   statusBadge: {
-    position: 'absolute',
+    position: "absolute",
     bottom: -4,
     right: -4,
     backgroundColor: COLORS.SURFACE,
     borderRadius: 10,
   },
   headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   downloadedBadge: {
-    backgroundColor: COLORS.STATUS.SUCCESS + '20',
+    backgroundColor: COLORS.STATUS.SUCCESS + "20",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -206,19 +253,19 @@ const styles = StyleSheet.create({
   downloadedText: {
     color: COLORS.STATUS.SUCCESS,
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   modelType: {
     color: COLORS.TEXT.SECONDARY,
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   content: {
     marginBottom: 16,
   },
   name: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: "600",
     color: COLORS.TEXT.PRIMARY,
     marginBottom: 8,
   },
@@ -232,8 +279,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   detailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   detailText: {
@@ -241,7 +288,7 @@ const styles = StyleSheet.create({
     color: COLORS.TEXT.SECONDARY,
   },
   footer: {
-    marginTop: 'auto',
+    marginTop: "auto",
   },
   downloadingContainer: {
     gap: 8,
@@ -249,38 +296,38 @@ const styles = StyleSheet.create({
   downloadingText: {
     fontSize: 13,
     color: COLORS.PRIMARY,
-    fontWeight: '500',
-    textAlign: 'center',
+    fontWeight: "500",
+    textAlign: "center",
   },
   actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
     gap: 12,
   },
   buttonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 6,
   },
   buttonText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     color: COLORS.PRIMARY,
   },
   deleteButton: {
     padding: 8,
-    backgroundColor: COLORS.STATUS.ERROR + '10',
+    backgroundColor: COLORS.STATUS.ERROR + "10",
     borderRadius: 8,
   },
   tags: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
     marginBottom: 12,
   },
   tag: {
-    backgroundColor: COLORS.PRIMARY + '10',
+    backgroundColor: COLORS.PRIMARY + "10",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -288,6 +335,6 @@ const styles = StyleSheet.create({
   tagText: {
     color: COLORS.PRIMARY,
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: "500",
   },
-}); 
+});
