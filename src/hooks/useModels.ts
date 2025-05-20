@@ -74,8 +74,6 @@ export function useModels() {
             file.rfilename.endsWith(".gguf"),
           );
 
-          console.log(response.data);
-
           for (const file of files) {
             const isDownloaded = downloadedModelIds.has(file.rfilename);
             models.push({

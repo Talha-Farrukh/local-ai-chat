@@ -1,4 +1,4 @@
-import { Dimensions, Platform, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Platform, StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import Markdown from "react-native-markdown-display";
 import { COLORS } from "../../lib/constants";
 import { formatDate, formatHTMLtoText } from "../../lib/utils";
@@ -8,14 +8,25 @@ interface MessageBubbleProps {
   message: Message;
   showTimestamp?: boolean;
   isStreaming?: boolean;
+  onLongPress?: (messageId: string) => void;  
 }
 
 export function MessageBubble({
   message,
   showTimestamp = false,
   isStreaming = false,
+  onLongPress,
 }: Readonly<MessageBubbleProps>) {
   const isUser = message.role === "user";
+
+  const handleLongPress = () => {
+    // Only allow long press on user messages and not on streaming messages
+    if (isUser && !isStreaming && onLongPress) {
+      onLongPress(message.id);
+    }
+  };
+
+  const MessageContainer = isUser && onLongPress ? TouchableOpacity : View;
 
   return (
     <View
@@ -24,12 +35,15 @@ export function MessageBubble({
         isUser ? styles.userContainer : styles.assistantContainer,
       ]}
     >
-      <View
+      <MessageContainer
         style={[
           styles.bubble,
           isUser ? styles.userBubble : styles.assistantBubble,
           isStreaming && styles.streamingBubble,
         ]}
+        onLongPress={handleLongPress}
+        delayLongPress={500}
+        disabled={!isUser || isStreaming}
       >
         {isUser ? (
           <Text style={[styles.text, styles.userText]}>{message.content}</Text>
@@ -48,7 +62,7 @@ export function MessageBubble({
             {formatDate(message.timestamp)}
           </Text>
         )}
-      </View>
+      </MessageContainer>
     </View>
   );
 }
